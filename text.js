@@ -12,9 +12,14 @@ exports.translate = function(load) {
     .replace(/[\u2028]/g, "\\u2028")
     .replace(/[\u2029]/g, "\\u2029");
 
-  if(System.transpiler === false) {
+  if (typeof define === "function" && typeof define.amd === "object" && define.amd) {
     load.metadata.format = 'amd';
     return 'def' + 'ine(function() {\nreturn "' + text + '";\n});';
+  }
+
+  if (typeof module !== "undefined" && module.exports && typeof require === "function") {
+    load.metadata.format = 'cjs';
+    return 'module.exports = "' + text + '";';
   }
 
   load.metadata.format = 'esm';
